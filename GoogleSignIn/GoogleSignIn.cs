@@ -56,7 +56,7 @@ namespace Google {
 #endif
 
     private ISignInImpl impl;
-    public GoogleSignIn Create(GoogleSignInConfiguration configuration)
+    public static GoogleSignIn Create(GoogleSignInConfiguration configuration)
     {
 #if UNITY_EDITOR || UNITY_STANDALONE
         return new GoogleSignIn(new GoogleSignInImplEditor(configuration));
