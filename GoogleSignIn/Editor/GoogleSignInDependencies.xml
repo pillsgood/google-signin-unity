@@ -11,8 +11,8 @@
   </androidPackages>
 
   <!-- iOS Cocoapod dependencies can be specified by each iosPod element. -->
-  <iosPods>
-    <iosPod name="GoogleSignIn" version="~> 6.2.4" bitcodeEnabled="false" minTargetSdk="6.0">
-    </iosPod>
-  </iosPods>
+    <iosPods>
+        <iosPod name="GoogleSignIn" version="~> 7.1.0" bitcodeEnabled="false" minTargetSdk="6.0">
+        </iosPod>
+    </iosPods>
 </dependencies>
