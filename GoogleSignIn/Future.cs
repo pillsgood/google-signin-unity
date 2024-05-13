@@ -36,7 +36,7 @@ namespace Google {
   /// Result is only set if  the operation was successful.
   /// As a convience, a coroutine to complete a Task is provided.
   /// </remarks>
-  public class Future<T> {
+  internal class Future<T> {
 
     private FutureAPIImpl<T> apiImpl;
 

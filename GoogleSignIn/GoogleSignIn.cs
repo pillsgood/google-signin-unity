@@ -47,7 +47,7 @@ namespace Google {
   /// </code>
   /// </para>
   /// </remarks>
-  public class GoogleSignIn {
+  public class GoogleSignIn : IDisposable {
 
 #if !UNITY_ANDROID && !UNITY_IOS
   static GoogleSignIn() {
@@ -55,51 +55,18 @@ namespace Google {
   }
 #endif
 
-    private static GoogleSignIn theInstance = null;
-    private static GoogleSignInConfiguration theConfiguration = null;
     private ISignInImpl impl;
-
-    ///<summary> The configuration settings for Google Sign-in.</summary>
-    ///<remarks> The configuration should be set before calling the sign-in
-    /// methods.  Once the configuration is set it cannot be changed.
-    ///</remarks>
-    public static GoogleSignInConfiguration Configuration {
-      set {
-        // Can set the configuration until the singleton is created.
-        if (theInstance == null || theConfiguration == value || theConfiguration == null) {
-          theConfiguration = value;
-        } else {
-          throw new SignInException(GoogleSignInStatusCode.DEVELOPER_ERROR,
-              "DefaultInstance already created. " +
-              " Cannot change configuration after creation.");
-        }
-      }
-
-      get {
-        return theConfiguration;
-      }
-    }
-
-    /// <summary>
-    /// Singleton instance of this class.
-    /// </summary>
-    /// <value>The instance.</value>
-    public static GoogleSignIn DefaultInstance {
-      get {
-        if (theInstance == null) {
+    public GoogleSignIn Create(GoogleSignInConfiguration configuration)
+    {
 #if UNITY_EDITOR || UNITY_STANDALONE
-          theInstance = new GoogleSignIn(new GoogleSignInImplEditor(Configuration));
+        return new GoogleSignIn(new GoogleSignInImplEditor(configuration));
 #elif UNITY_ANDROID || UNITY_IOS
-          theInstance = new GoogleSignIn(new GoogleSignInImpl(Configuration));
+        return new GoogleSignIn(new GoogleSignInImpl(configuration));
 #else
-          theInstance = new GoogleSignIn(null);
-          throw new SignInException(
-              GoogleSignInStatusCode.DeveloperError,
-              "This platform is not supported by GoogleSignIn");
+        throw new SignInException(
+            GoogleSignInStatusCode.DEVELOPER_ERROR,
+            "This platform is not supported by GoogleSignIn");
 #endif
-        }
-        return theInstance;
-      }
     }
 
     internal GoogleSignIn(ISignInImpl impl) {
@@ -129,7 +96,7 @@ namespace Google {
       return tcs.Task;
     }
 
-    public Future<GoogleSignInUser> SignInFuture() => impl.SignIn();
+    internal Future<GoogleSignInUser> SignInFuture() => impl.SignIn();
 
     /// <summary>Starts the silent authentication process.</summary>
     /// <remarks>
@@ -150,7 +117,7 @@ namespace Google {
       return tcs.Task;
     }
 
-    public Future<GoogleSignInUser> SignInSilentlyFuture() => impl.SignInSilently();
+    internal Future<GoogleSignInUser> SignInSilentlyFuture() => impl.SignInSilently();
 
     /// <summary>
     /// Signs out the User.
@@ -206,6 +173,14 @@ namespace Google {
         get;
         internal set;
       }
+    }
+
+    public void Dispose()
+    {
+        if (impl is IDisposable disposable)
+        {
+            disposable.Dispose();
+        }
     }
   }
 
