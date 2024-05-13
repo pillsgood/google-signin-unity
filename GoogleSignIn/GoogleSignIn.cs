@@ -159,7 +159,6 @@ namespace Google {
     /// account to use when signing in.
     /// </remarks>
     public void SignOut() {
-      theConfiguration = null;
       impl.SignOut();
     }
 
